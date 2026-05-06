@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=Document Multimedia Q&A API
+      - APP_ENV=development
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - MONGO_URI=mongodb://mongodb:27017/chatbot
+      - MONGO_DB_NAME=chatbot
+      - UPLOAD_DIR=uploads
+      - WHISPER_MODEL=base
+      - VECTOR_STORE_DIR=vector_store
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - CHUNK_SIZE=1000
+      - CHUNK_OVERLAP=200
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/vector_store:/app/vector_store
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongodb_data:
+  redis_data:

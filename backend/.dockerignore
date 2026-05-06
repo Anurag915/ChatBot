@@ -1,0 +1,10 @@
+.git
+.pytest_cache
+.coverage
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+uploads/
+vector_store/
+.env
